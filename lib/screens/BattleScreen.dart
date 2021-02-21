@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,7 +98,7 @@ class _BattleScreenState extends State<BattleScreen> {
           title: Text('Warning'),
           content: Text('Do you really want to exit from the battle?'),
           actions: [
-            FlatButton(
+            TextButton(
                 child: Text('Yes',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -106,7 +108,7 @@ class _BattleScreenState extends State<BattleScreen> {
                   widget.player = players[0];
                   Navigator.pop(c, true);
                 }),
-            FlatButton(
+            TextButton(
               child: Text('No',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -120,6 +122,29 @@ class _BattleScreenState extends State<BattleScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.player.name + "'s battle"),
+          actions: [
+            IconButton(
+                icon: FaIcon(FontAwesomeIcons.dice),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => StatefulBuilder(
+                            builder: (context, setDiceState) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setDiceState(() {});
+                                },
+                                child: Container(
+                                  child: Dialog(
+                                    backgroundColor: Colors.transparent,
+                                    child: showRandomDice(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ));
+                })
+          ],
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -137,17 +162,6 @@ class _BattleScreenState extends State<BattleScreen> {
                 children: [
                   //player card
                   Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.8),
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                          offset: Offset(1, 2),
-                        ),
-                      ],
-                    ),
                     height: 235,
                     child: ListView(
                       shrinkWrap: true,
@@ -157,205 +171,215 @@ class _BattleScreenState extends State<BattleScreen> {
                           Center(
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.8,
-                              //height: 240,
                               child: Stack(
                                 children: [
-                                  Card(
-                                    color: brownColor,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                players[i].name,
-                                                style: TextStyle(
-                                                  fontSize: 32,
-                                                  fontWeight: FontWeight.bold,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.8),
+                                          spreadRadius: 1,
+                                          blurRadius: 10,
+                                          offset: Offset(1, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Card(
+                                      color: brownColor,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  players[i].name,
+                                                  style: TextStyle(
+                                                    fontSize: 32,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              InkWell(
-                                                child:
-                                                    genderIcons[players[i].sex],
-                                                onTap: () {
-                                                  setState(() {
-                                                    if (players[i].sex == 0) {
-                                                      players[i].sex = 1;
-                                                      widget.updatePlayer(
-                                                          widget.allPlayers
-                                                              .indexOf(
-                                                                  players[i]),
-                                                          players[i]);
-                                                    } else {
-                                                      players[i].sex = 0;
-                                                    }
-                                                  });
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.arrow_upward,
-                                                    size: 32,
-                                                  ),
-                                                  Container(
-                                                    child: Column(
-                                                      children: [
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                players[i]
-                                                                    .level++;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.add)),
-                                                        Text(
-                                                          players[i]
-                                                              .level
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 24),
-                                                        ),
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                players[i]
-                                                                    .level--;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.remove)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: 24,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    "assets/images/swordicon.png",
-                                                    height: 24,
-                                                  ),
-                                                  Container(
-                                                    child: Column(
-                                                      children: [
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                players[i]
-                                                                    .stuff++;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.add)),
-                                                        Text(
-                                                          players[i]
-                                                              .stuff
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 24),
-                                                        ),
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                players[i]
-                                                                    .stuff--;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.remove)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: 24,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.star_outline),
-                                                  Container(
-                                                    child: Column(
-                                                      children: [
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                playersBonus[
-                                                                    i]++;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.add)),
-                                                        Text(
-                                                          playersBonus[i]
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              fontSize: 24),
-                                                        ),
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                playersBonus[
-                                                                    i]--;
-                                                              });
-                                                            },
-                                                            icon: Icon(
-                                                                Icons.remove)),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                  icon: Image.asset(
-                                                    "assets/images/doublepersons.png",
-                                                    color:
-                                                        players[i].isDoubleHero
-                                                            ? lightOrange
-                                                            : Colors.black,
-                                                  ),
-                                                  onPressed: () {
+                                                SizedBox(
+                                                  width: 8,
+                                                ),
+                                                InkWell(
+                                                  child: genderIcons[
+                                                      players[i].sex],
+                                                  onTap: () {
                                                     setState(() {
-                                                      players[i].isDoubleHero =
-                                                          !players[i]
-                                                              .isDoubleHero;
+                                                      if (players[i].sex == 0) {
+                                                        players[i].sex = 1;
+                                                        widget.updatePlayer(
+                                                            widget.allPlayers
+                                                                .indexOf(
+                                                                    players[i]),
+                                                            players[i]);
+                                                      } else {
+                                                        players[i].sex = 0;
+                                                      }
                                                     });
-                                                  })
-                                            ],
-                                          )
-                                          // Text(
-                                          //   (widget.player.level +
-                                          //           widget.player.stuff +
-                                          //           playerBonus)
-                                          //       .toString(),
-                                          //   style: TextStyle(fontSize: 46),
-                                          // )
-                                        ],
+                                                  },
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.arrow_upward,
+                                                      size: 32,
+                                                    ),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  players[i]
+                                                                      .level++;
+                                                                });
+                                                              },
+                                                              icon: Icon(
+                                                                  Icons.add)),
+                                                          Text(
+                                                            players[i]
+                                                                .level
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 24),
+                                                          ),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  players[i]
+                                                                      .level--;
+                                                                });
+                                                              },
+                                                              icon: Icon(Icons
+                                                                  .remove)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 24,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/swordicon.png",
+                                                      height: 24,
+                                                    ),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  players[i]
+                                                                      .stuff++;
+                                                                });
+                                                              },
+                                                              icon: Icon(
+                                                                  Icons.add)),
+                                                          Text(
+                                                            players[i]
+                                                                .stuff
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 24),
+                                                          ),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  players[i]
+                                                                      .stuff--;
+                                                                });
+                                                              },
+                                                              icon: Icon(Icons
+                                                                  .remove)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 24,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.star_outline),
+                                                    Container(
+                                                      child: Column(
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  playersBonus[
+                                                                      i]++;
+                                                                });
+                                                              },
+                                                              icon: Icon(
+                                                                  Icons.add)),
+                                                          Text(
+                                                            playersBonus[i]
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 24),
+                                                          ),
+                                                          IconButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  playersBonus[
+                                                                      i]--;
+                                                                });
+                                                              },
+                                                              icon: Icon(Icons
+                                                                  .remove)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            players.length <= 1
+                                                ? Row(
+                                                    children: [
+                                                      IconButton(
+                                                        icon: Image.asset(
+                                                          "assets/images/doublepersons.png",
+                                                          color: players[i]
+                                                                  .isDoubleHero
+                                                              ? lightOrange
+                                                              : Colors.black,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            players[i]
+                                                                    .isDoubleHero =
+                                                                !players[i]
+                                                                    .isDoubleHero;
+                                                          });
+                                                        },
+                                                      )
+                                                    ],
+                                                  )
+                                                : SizedBox.shrink(),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  players.length < 2
+                                  (players.length < 2 &&
+                                          players[0].isDoubleHero == false)
                                       ? Positioned(
                                           bottom: 0,
                                           right: 10,
@@ -961,5 +985,10 @@ class _BattleScreenState extends State<BattleScreen> {
         ),
       ),
     );
+  }
+
+  showRandomDice() {
+    int rand = 1 + Random().nextInt(7 - 1);
+    return Image.asset("assets/images/$rand.png");
   }
 }

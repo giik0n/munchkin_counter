@@ -278,224 +278,244 @@ class _GameScreenState extends State<GameScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: ReorderableListView(
-                onReorder: (oldIndex, newIndex) {
-                  setState(() {
-                    final newIdx =
-                        newIndex > oldIndex ? newIndex - 1 : newIndex;
-                    final MyPlayer player = players.removeAt(oldIndex);
-                    players.insert(newIdx, player);
-                  });
-                },
-                children: players
-                    .map((item) => Padding(
-                          key: Key(item.name),
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: playerColors[item.color],
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.6),
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  offset: Offset(1, 2),
-                                ),
-                              ],
-                            ),
-                            height: 125,
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 100,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      FittedBox(
-                                        fit: BoxFit.fitWidth,
-                                        child: Text(
-                                          item.name,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
+              child: Theme(
+                data: ThemeData(canvasColor: Colors.transparent),
+                child: ReorderableListView(
+                  onReorder: (oldIndex, newIndex) {
+                    setState(() {
+                      final newIdx =
+                          newIndex > oldIndex ? newIndex - 1 : newIndex;
+                      final MyPlayer player = players.removeAt(oldIndex);
+                      players.insert(newIdx, player);
+                    });
+                  },
+                  children: players
+                      .map((item) => Padding(
+                            key: Key(item.name),
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: playerColors[item.color],
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.6),
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: Offset(1, 2),
+                                  ),
+                                ],
+                              ),
+                              height: 125,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: Text(
+                                            item.name,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        InkWell(
+                                          child: genderIcons[item.sex],
+                                          onTap: () async {
+                                            if (item.sex == 0) {
+                                              item.sex = 1;
+                                            } else {
+                                              item.sex = 0;
+                                            }
+                                            var result = await databaseService
+                                                .updatePlayer(item);
+                                            if (result == 1) {
+                                              setState(() {});
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_upward,
+                                        size: 32,
                                       ),
-                                      SizedBox(
-                                        height: 10,
+                                      Container(
+                                        child: Column(
+                                          children: [
+                                            IconButton(
+                                                onPressed: () async {
+                                                  item.level++;
+                                                  var result =
+                                                      await databaseService
+                                                          .updatePlayer(item);
+                                                  if (result == 1) {
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                icon: Icon(Icons.add)),
+                                            Text(
+                                              item.level.toString(),
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                  item.level--;
+                                                  var result =
+                                                      await databaseService
+                                                          .updatePlayer(item);
+                                                  if (result == 1) {
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                icon: Icon(Icons.remove)),
+                                          ],
+                                        ),
                                       ),
-                                      InkWell(
-                                        child: genderIcons[item.sex],
-                                        onTap: () async {
-                                          if (item.sex == 0) {
-                                            item.sex = 1;
-                                          } else {
-                                            item.sex = 0;
-                                          }
-                                          var result = await databaseService
-                                              .updatePlayer(item);
-                                          if (result == 1) {
-                                            setState(() {});
-                                          }
-                                        },
-                                      )
                                     ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.arrow_upward,
-                                      size: 32,
-                                    ),
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () async {
-                                                item.level++;
-                                                var result =
-                                                    await databaseService
-                                                        .updatePlayer(item);
-                                                if (result == 1) {
-                                                  setState(() {});
-                                                }
-                                              },
-                                              icon: Icon(Icons.add)),
-                                          Text(
-                                            item.level.toString(),
-                                            style: TextStyle(fontSize: 24),
-                                          ),
-                                          IconButton(
-                                              onPressed: () async {
-                                                item.level--;
-                                                var result =
-                                                    await databaseService
-                                                        .updatePlayer(item);
-                                                if (result == 1) {
-                                                  setState(() {});
-                                                }
-                                              },
-                                              icon: Icon(Icons.remove)),
-                                        ],
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/swordicon.png",
+                                        height: 24,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Image.asset(
-                                      "assets/images/swordicon.png",
-                                      height: 24,
-                                    ),
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () async {
-                                                item.stuff++;
-                                                var result =
-                                                    await databaseService
-                                                        .updatePlayer(item);
-                                                if (result == 1) {
-                                                  setState(() {});
-                                                }
-                                              },
-                                              icon: Icon(Icons.add)),
-                                          Text(
-                                            item.stuff.toString(),
-                                            style: TextStyle(fontSize: 24),
-                                          ),
-                                          IconButton(
-                                              onPressed: () async {
-                                                item.stuff--;
-                                                var result =
-                                                    await databaseService
-                                                        .updatePlayer(item);
-                                                if (result == 1) {
-                                                  setState(() {});
-                                                }
-                                              },
-                                              icon: Icon(Icons.remove)),
-                                        ],
+                                      Container(
+                                        child: Column(
+                                          children: [
+                                            IconButton(
+                                                onPressed: () async {
+                                                  item.stuff++;
+                                                  var result =
+                                                      await databaseService
+                                                          .updatePlayer(item);
+                                                  if (result == 1) {
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                icon: Icon(Icons.add)),
+                                            Text(
+                                              item.stuff.toString(),
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                  item.stuff--;
+                                                  var result =
+                                                      await databaseService
+                                                          .updatePlayer(item);
+                                                  if (result == 1) {
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                icon: Icon(Icons.remove)),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Spacer(),
-                                FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Text(
-                                    (item.level + item.stuff).toString(),
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold),
+                                    ],
                                   ),
-                                ),
-                                Spacer(),
-                                Column(
-                                  children: [
-                                    IconButton(
-                                        icon: Icon(Icons.close),
-                                        onPressed: () async {
-                                          var result = await databaseService
-                                              .removePlayer(item.id);
-                                          setState(() {
-                                            if (result == 1) {
-                                              players.remove(item);
-                                            }
-                                          });
-                                        }),
-                                    Spacer(),
-                                    InkWell(
-                                      onTap: () async {
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BattleScreen(item, players,
-                                                        updatePlayer)));
-                                        databaseService.updatePlayer(item);
-                                        setState(() {});
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/battleicon.png",
-                                            scale: 28,
-                                          ),
-                                          Text("Battle"),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
+                                  Spacer(),
+                                  FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: Text(
+                                      (item.level + item.stuff).toString(),
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: [
+                                      IconButton(
+                                          icon: Icon(Icons.close),
+                                          onPressed: () async {
+                                            var result = await databaseService
+                                                .removePlayer(item.id);
+                                            setState(() {
+                                              if (result == 1) {
+                                                players.remove(item);
+                                              }
+                                            });
+                                          }),
+                                      Spacer(),
+                                      InkWell(
+                                        onTap: () async {
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BattleScreen(
+                                                          item,
+                                                          players,
+                                                          updatePlayer)));
+                                          databaseService.updatePlayer(item);
+                                          setState(() {});
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Image.asset(
+                                              "assets/images/battleicon.png",
+                                              scale: 28,
+                                            ),
+                                            Text("Battle"),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ))
-                    .toList(),
+                          ))
+                      .toList(),
+                ),
               ),
             )
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.sentiment_very_dissatisfied,
-                        size: 64, color: brownColor),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      "Add new players at botom \"+\" button",
-                      style: TextStyle(fontSize: 24),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+          : Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    "assets/images/battlebackground1.jpg",
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.sentiment_very_dissatisfied,
+                        size: 64,
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text(
+                        "Add new players at botom \"+\" button",
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

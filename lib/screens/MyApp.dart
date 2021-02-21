@@ -78,7 +78,6 @@ class _MyBodyState extends State<MyBody> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: TextField(
                                           maxLength: 12,
-                                          maxLengthEnforced: true,
                                           decoration: InputDecoration(
                                               hintText: "Write company name"),
                                           onChanged: (value) {

@@ -15,7 +15,7 @@ class MyPageSelector extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.asset("assets/images/machkinlogo.png"),
+                  child: Image.asset("assets/images/treasure_transparent.png"),
                 ),
                 Text(
                   "This app will help you to play Munchkin without being distracted from the game",
