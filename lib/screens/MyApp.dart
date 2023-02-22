@@ -46,7 +46,15 @@ class _MyBodyState extends State<MyBody> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
-          primaryColor: brownColor, scaffoldBackgroundColor: lightOrange),
+          primaryColor: brownColor,
+          scaffoldBackgroundColor: lightOrange,
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            foregroundColor: Colors.white,
+            backgroundColor: brownColor,
+          ),
+          appBarTheme: AppBarTheme(
+            color: brownColor,
+          )),
       home: FutureBuilder(
         future: SPService.isFirstStart(),
         initialData: false,
@@ -89,8 +97,11 @@ class _MyBodyState extends State<MyBody> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
                                           width: double.infinity,
-                                          child: RaisedButton(
-                                            color: brownColor,
+                                          child: ElevatedButton(
+                                            style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(brownColor)),
                                             onPressed: () async {
                                               await SPService.addCompany(
                                                   companyName);

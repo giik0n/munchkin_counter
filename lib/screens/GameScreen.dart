@@ -185,8 +185,10 @@ class _GameScreenState extends State<GameScreen> {
                     padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                     child: Container(
                       width: double.infinity,
-                      child: RaisedButton(
-                        color: brownColor,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(brownColor)),
                         onPressed: () {
                           isAdd = true;
                           Navigator.pop(context);
@@ -232,6 +234,45 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {});
   }
 
+  Future<bool> showAlertDialog(BuildContext context) async {
+    // set up the buttons
+    Widget cancelButton = ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(brownColor),
+      ),
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.red),
+      ),
+      child: Text("Reset"),
+      onPressed: () {
+        Navigator.pop(context, true);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: lightOrange,
+      title: Text("Are you sure?"),
+      content: Text("Would you like to reset this party?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,13 +285,16 @@ class _GameScreenState extends State<GameScreen> {
                 size: 32,
                 color: Colors.white,
               ),
-              onPressed: () {
-                for (var i = 0; i < players.length; i++) {
-                  players[i].level = 1;
-                  players[i].stuff = 0;
-                  players[i].isDoubleHero = false;
-                  databaseService.updatePlayer(players[i]);
-                  setState(() {});
+              onPressed: () async {
+                bool reset = await showAlertDialog(context);
+                if (reset) {
+                  for (var i = 0; i < players.length; i++) {
+                    players[i].level = 1;
+                    players[i].stuff = 0;
+                    players[i].isDoubleHero = false;
+                    databaseService.updatePlayer(players[i]);
+                    setState(() {});
+                  }
                 }
               }),
         ],
@@ -270,14 +314,6 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: players.length > 0
           ? Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    "assets/images/battlebackground1.jpg",
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
               child: Theme(
                 data: ThemeData(canvasColor: Colors.transparent),
                 child: ReorderableListView(
@@ -489,7 +525,7 @@ class _GameScreenState extends State<GameScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                    "assets/images/battlebackground1.jpg",
+                    "assets/images/background_hw.jpeg",
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -509,9 +545,7 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                       Text(
                         "Add new players at botom \"+\" button",
-                        style: TextStyle(
-                          fontSize: 24,
-                        ),
+                        style: TextStyle(fontSize: 24, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                     ],

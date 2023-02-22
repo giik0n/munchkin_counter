@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:munchkin_counter/screens/GameScreen.dart';
 import 'package:munchkin_counter/services/SPService.dart';
 import 'package:munchkin_counter/shared/colors.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -12,9 +13,53 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  RateMyApp _rateMyApp = RateMyApp(
+      preferencesPrefix: 'rateMyApp_',
+      minDays: 1,
+      minLaunches: 2,
+      remindDays: 2,
+      remindLaunches: 2,
+      appStoreIdentifier: 'com.alexpan.munchkinCounter',
+      googlePlayIdentifier: 'com.alexpan.munchkin_counter');
+
   @override
   void initState() {
     super.initState();
+    _rateMyApp.init().then((_) {
+      if (_rateMyApp.shouldOpenDialog) {
+        _rateMyApp.showStarRateDialog(
+          context,
+          title: "Enjoying Munchkin Level Counter?",
+          message: "Please leave a rating!",
+          dialogStyle: const DialogStyle(
+            titleAlign: TextAlign.center,
+            messageAlign: TextAlign.center,
+            messagePadding: EdgeInsets.only(bottom: 20),
+          ),
+          actionsBuilder: (context, stars) {
+            return [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () async {
+                  print('Thanks for the ' +
+                      (stars == null ? '0' : stars.round().toString()) +
+                      ' star(s) !');
+
+                  await _rateMyApp
+                      .callEvent(RateMyAppEventType.rateButtonPressed);
+                  Navigator.pop<RateMyAppDialogButton>(
+                      context, RateMyAppDialogButton.rate);
+                  _rateMyApp.launchStore();
+                },
+              ),
+            ];
+          },
+          starRatingOptions: StarRatingOptions(),
+          onDismissed: () =>
+              _rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+        );
+      }
+    });
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -37,25 +82,20 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-            "assets/images/battlebackground1.jpg",
-          ),
-          fit: BoxFit.cover,
-        ),
-      ),
       child: FutureBuilder(
         initialData: [""],
         future: SPService.getCompanies(),
         builder: (context, AsyncSnapshot<List<String>> snapshot) {
-          return snapshot.data == null
+          return (snapshot.data == null || snapshot.data.length == 0)
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       "You dont have any games now \n Tap \" + \" to add new",
-                      style: TextStyle(fontSize: 24),
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -89,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ]),
                                 child: Card(
-                                  color: lightOrange,
+                                  color: brownColor.shade600,
                                   child: Stack(children: [
                                     Center(
                                       child: Container(
@@ -119,10 +159,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: IconButton(
                                     icon: Icon(Icons.close),
                                     onPressed: () async {
-                                      var isOk = await SPService.deleteCompany(
-                                          snapshot.data[i]);
-                                      if (isOk) {
-                                        setState(() {});
+                                      bool delete =
+                                          await showAlertDialog(context);
+                                      if (delete) {
+                                        var isOk =
+                                            await SPService.deleteCompany(
+                                                snapshot.data[i]);
+                                        if (isOk) {
+                                          setState(() {});
+                                        }
                                       }
                                     }),
                               ),
@@ -132,6 +177,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
         },
       ),
+    );
+  }
+
+  Future<bool> showAlertDialog(BuildContext context) async {
+    // set up the buttons
+    Widget cancelButton = ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(brownColor),
+      ),
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.red),
+      ),
+      child: Text("Delete"),
+      onPressed: () {
+        Navigator.pop(context, true);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: lightOrange,
+      title: Text("Are you sure?"),
+      content: Text("Would you like delete to this party?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

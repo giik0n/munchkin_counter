@@ -98,24 +98,24 @@ class _BattleScreenState extends State<BattleScreen> {
           title: Text('Warning'),
           content: Text('Do you really want to exit from the battle?'),
           actions: [
-            TextButton(
-                child: Text('Yes',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: brownColor,
-                    )),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(brownColor),
+              ),
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                ),
+                child: Text('Exit'),
                 onPressed: () {
                   widget.player = players[0];
                   Navigator.pop(c, true);
                 }),
-            TextButton(
-              child: Text('No',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: brownColor,
-                  )),
-              onPressed: () => Navigator.pop(c, false),
-            ),
           ],
         ),
       ),
@@ -147,14 +147,14 @@ class _BattleScreenState extends State<BattleScreen> {
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                "assets/images/battlebackground1.jpg",
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(
+          //       "assets/images/background_hw.jpeg",
+          //     ),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           child: Center(
             child: SingleChildScrollView(
               child: Column(

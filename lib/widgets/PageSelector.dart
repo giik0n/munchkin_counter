@@ -45,8 +45,10 @@ class MyPageSelector extends StatelessWidget {
               ),
             )),
             //Spacer(),
-            RaisedButton(
-              color: Colors.green,
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(brownColor)),
               onPressed: () {
                 updateState();
               },
@@ -79,7 +81,7 @@ class MyPageSelector extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    FlatButton(
+                    ElevatedButton(
                       onPressed: () {
                         if (!controller.indexIsChanging) {
                           controller.animateTo(pages.length - 1);
@@ -90,8 +92,10 @@ class MyPageSelector extends StatelessWidget {
                         style: TextStyle(color: brownColor),
                       ),
                     ),
-                    RaisedButton(
-                      color: brownColor,
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(brownColor)),
                       onPressed: () {
                         if (controller.index != pages.length - 1) {
                           controller.animateTo(controller.index + 1);
