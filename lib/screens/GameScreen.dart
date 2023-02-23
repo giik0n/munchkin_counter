@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,6 +20,7 @@ class _GameScreenState extends State<GameScreen> {
   List<MyPlayer> players = [];
 
   TextEditingController _controller = TextEditingController();
+  TextEditingController _controllerName = TextEditingController();
 
   DatabaseService databaseService = DatabaseService();
 
@@ -26,7 +28,7 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     databaseService.initDatabase();
-    getLocalplayers();
+    getLocalPlayers();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -50,7 +52,7 @@ class _GameScreenState extends State<GameScreen> {
         sex: 0,
         level: 1,
         stuff: 0,
-        name: "Hero " + (players.length + 1).toString(),
+        name: "Hero ".tr() + (players.length + 1).toString(),
         gameName: widget.company,
         isDoubleHero: false);
     _controller.text = player.name;
@@ -73,7 +75,7 @@ class _GameScreenState extends State<GameScreen> {
                       },
                       controller: _controller,
                       decoration:
-                          InputDecoration(hintText: "Enter players name"),
+                          InputDecoration(prefix: Text("Name".tr())),
                       onChanged: (value) {
                         player.name = value;
                       },
@@ -106,7 +108,7 @@ class _GameScreenState extends State<GameScreen> {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  Text("Female")
+                                  Text("Female".tr())
                                 ],
                               ),
                             ),
@@ -131,7 +133,7 @@ class _GameScreenState extends State<GameScreen> {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  Text("Male")
+                                  Text("Male".tr())
                                 ],
                               ),
                             ),
@@ -147,7 +149,7 @@ class _GameScreenState extends State<GameScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            Text("Select players color"),
+                            Text("Select players color".tr()),
                             SizedBox(
                               height: 8,
                             ),
@@ -194,7 +196,7 @@ class _GameScreenState extends State<GameScreen> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          "Add new",
+                          "Add".tr(),
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -229,18 +231,18 @@ class _GameScreenState extends State<GameScreen> {
     return playersL;
   }
 
-  void getLocalplayers() async {
+  void getLocalPlayers() async {
     players = await getPlayers();
     setState(() {});
   }
 
-  Future<bool> showAlertDialog(BuildContext context) async {
+  Future<bool> showAlertDialog(BuildContext context, String text) async {
     // set up the buttons
     Widget cancelButton = ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(brownColor),
       ),
-      child: Text("Cancel"),
+      child: Text("Cancel".tr()),
       onPressed: () {
         Navigator.pop(context, false);
       },
@@ -249,7 +251,7 @@ class _GameScreenState extends State<GameScreen> {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.red),
       ),
-      child: Text("Reset"),
+      child: Text("Reset".tr()),
       onPressed: () {
         Navigator.pop(context, true);
       },
@@ -257,8 +259,8 @@ class _GameScreenState extends State<GameScreen> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       backgroundColor: lightOrange,
-      title: Text("Are you sure?"),
-      content: Text("Would you like to reset this party?"),
+      title: Text("Are you sure?".tr()),
+      content: Text(text),
       actions: [
         cancelButton,
         continueButton,
@@ -277,24 +279,25 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.company + " Munchkins"),
+        title: Text(widget.company + " Munchkins".tr()),
         actions: [
           IconButton(
-              icon: Icon(
-                Icons.person_add,
-                size: 32,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                MyPlayer player = await showAddDialog();
-                if (player != null) {
-                  var id = await databaseService.addPlayer(player);
-                  player.id = id;
-                  setState(() {
-                    players.add(player);
-                  });
-                }
-              },),
+            icon: Icon(
+              Icons.person_add,
+              size: 32,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              MyPlayer player = await showAddDialog();
+              if (player != null) {
+                var id = await databaseService.addPlayer(player);
+                player.id = id;
+                setState(() {
+                  players.add(player);
+                });
+              }
+            },
+          ),
           IconButton(
               icon: Icon(
                 Icons.refresh,
@@ -302,7 +305,7 @@ class _GameScreenState extends State<GameScreen> {
                 color: Colors.white,
               ),
               onPressed: () async {
-                bool reset = await showAlertDialog(context);
+                bool reset = await showAlertDialog(context, "Would you like to reset this party?".tr());
                 if (reset) {
                   for (var i = 0; i < players.length; i++) {
                     players[i].level = 1;
@@ -356,12 +359,44 @@ class _GameScreenState extends State<GameScreen> {
                                       children: [
                                         FittedBox(
                                           fit: BoxFit.fitWidth,
-                                          child: Text(
-                                            item.name,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              _controllerName.text = item.name;
+                                              showDialog(context: context, builder: (context)  {
+                                                return Dialog(
+                                                  backgroundColor: lightOrange,
+                                                  child: Container(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          TextField(
+                                                            controller: _controllerName,
+                                                          ),
+                                                          ElevatedButton(onPressed: () async {
+                                                            item.name = _controllerName.text;
+                                                            var result = await databaseService
+                                                                .updatePlayer(item);
+                                                            if (result == 1) {
+                                                              setState(() {});
+                                                              Navigator.pop(context);
+                                                            }
+                                                          }, child: Text("Save".tr()))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                            },
+                                            child: Text(
+                                              item.name,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -482,13 +517,17 @@ class _GameScreenState extends State<GameScreen> {
                                       IconButton(
                                           icon: Icon(Icons.close),
                                           onPressed: () async {
-                                            var result = await databaseService
-                                                .removePlayer(item.id);
-                                            setState(() {
-                                              if (result == 1) {
-                                                players.remove(item);
-                                              }
-                                            });
+                                            bool delete = await showAlertDialog(context, "Remove player?".tr());
+                                            if (delete != null && delete){
+                                              var result = await databaseService
+                                                  .removePlayer(item.id);
+                                              setState(() {
+                                                if (result == 1) {
+                                                  players.remove(item);
+                                                }
+                                              });
+                                            }
+
                                           }),
                                       Spacer(),
                                       InkWell(
@@ -510,7 +549,7 @@ class _GameScreenState extends State<GameScreen> {
                                               "assets/images/battleicon.png",
                                               scale: 28,
                                             ),
-                                            Text("Battle"),
+                                            Text("Battle".tr()),
                                           ],
                                         ),
                                       )
@@ -526,13 +565,13 @@ class _GameScreenState extends State<GameScreen> {
             )
           : Container(
               decoration: BoxDecoration(
-                // image: DecorationImage(
-                //   image: AssetImage(
-                //     "assets/images/background_hw.jpeg",
-                //   ),
-                //   fit: BoxFit.cover,
-                // ),
-              ),
+                  // image: DecorationImage(
+                  //   image: AssetImage(
+                  //     "assets/images/background_hw.jpeg",
+                  //   ),
+                  //   fit: BoxFit.cover,
+                  // ),
+                  ),
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -547,7 +586,7 @@ class _GameScreenState extends State<GameScreen> {
                         height: 16,
                       ),
                       Text(
-                        "Add new players at botom \"+\" button",
+                        "Add new players at botom \"+\" button".tr(),
                         style: TextStyle(fontSize: 24, color: Colors.black),
                         textAlign: TextAlign.center,
                       ),

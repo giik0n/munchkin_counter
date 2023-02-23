@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:munchkin_counter/screens/GameScreen.dart';
@@ -29,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_rateMyApp.shouldOpenDialog) {
         _rateMyApp.showStarRateDialog(
           context,
-          title: "Enjoying Munchkin Level Counter?",
-          message: "Please leave a rating!",
+          title: "Enjoying Munchkin Level Counter?".tr(),
+          message: "Please leave a rating!".tr(),
           dialogStyle: const DialogStyle(
             titleAlign: TextAlign.center,
             messageAlign: TextAlign.center,
@@ -41,10 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
               TextButton(
                 child: Text('OK'),
                 onPressed: () async {
-                  print('Thanks for the ' +
-                      (stars == null ? '0' : stars.round().toString()) +
-                      ' star(s) !');
-
                   await _rateMyApp
                       .callEvent(RateMyAppEventType.rateButtonPressed);
                   Navigator.pop<RateMyAppDialogButton>(
@@ -91,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "You dont have any games now \n Tap \" + \" to add new",
+                      "You dont have any games now \n Tap \" + \" to add new"
+                          .tr(),
                       style: TextStyle(
                         fontSize: 24,
                         color: Colors.black,
@@ -161,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onPressed: () async {
                                       bool delete =
                                           await showAlertDialog(context);
-                                      if (delete) {
+                                      if (delete != null && delete) {
                                         var isOk =
                                             await SPService.deleteCompany(
                                                 snapshot.data[i]);
@@ -186,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(brownColor),
       ),
-      child: Text("Cancel"),
+      child: Text("Cancel".tr()),
       onPressed: () {
         Navigator.pop(context, false);
       },
@@ -195,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.red),
       ),
-      child: Text("Delete"),
+      child: Text("Delete".tr()),
       onPressed: () {
         Navigator.pop(context, true);
       },
@@ -203,8 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       backgroundColor: lightOrange,
-      title: Text("Are you sure?"),
-      content: Text("Would you like delete to this party?"),
+      title: Text("Are you sure?".tr()),
+      content: Text("Would you like delete to this party?".tr()),
       actions: [
         cancelButton,
         continueButton,

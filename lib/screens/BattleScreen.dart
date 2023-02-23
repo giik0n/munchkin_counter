@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +23,7 @@ class BattleScreen extends StatefulWidget {
 class _BattleScreenState extends State<BattleScreen> {
   List<int> playersBonus = [];
   bool isDoubleHero = false;
-  MyPlayer monster = MyPlayer(level: 0, stuff: 0, name: "Monster");
+  MyPlayer monster = MyPlayer(level: 0, stuff: 0, name: "Monster".tr());
   List<Widget> stuffRange = [
     for (var i = -100; i < 100; i++) Text(i.toString())
   ];
@@ -95,14 +96,14 @@ class _BattleScreenState extends State<BattleScreen> {
         context: context,
         builder: (c) => AlertDialog(
           backgroundColor: lightOrange,
-          title: Text('Warning'),
-          content: Text('Do you really want to exit from the battle?'),
+          title: Text('Are you sure?'.tr()),
+          content: Text('Do you really want to exit from the battle?'.tr()),
           actions: [
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(brownColor),
               ),
-              child: Text("Cancel"),
+              child: Text("Cancel".tr()),
               onPressed: () {
                 Navigator.pop(context, false);
               },
@@ -111,7 +112,7 @@ class _BattleScreenState extends State<BattleScreen> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red),
                 ),
-                child: Text('Exit'),
+                child: Text('Battle end'.tr()),
                 onPressed: () {
                   widget.player = players[0];
                   Navigator.pop(c, true);
@@ -121,7 +122,7 @@ class _BattleScreenState extends State<BattleScreen> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.player.name + "'s battle"),
+          title: Text(widget.player.name + "'s battle".tr()),
           actions: [
             IconButton(
                 icon: FaIcon(FontAwesomeIcons.dice),
@@ -962,7 +963,7 @@ class _BattleScreenState extends State<BattleScreen> {
                           heroTag: null,
                           onPressed: () {
                             MyPlayer newMonster =
-                                MyPlayer(level: 0, stuff: 0, name: "Monster");
+                                MyPlayer(level: 0, stuff: 0, name: ("Monster".tr()));
                             setState(() {
                               monsters.add(newMonster);
                               scrollControllerEnemysStuffs.add(

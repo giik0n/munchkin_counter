@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:munchkin_counter/shared/colors.dart';
 
@@ -18,7 +19,8 @@ class MyPageSelector extends StatelessWidget {
                   child: Image.asset("assets/images/treasure_transparent.png"),
                 ),
                 Text(
-                  "This app will help you to play Munchkin without being distracted from the game",
+                  "This app will help you to play Munchkin without being distracted from the game"
+                      .tr(),
                   style: TextStyle(fontSize: 24),
                   textAlign: TextAlign.center,
                 )
@@ -29,7 +31,8 @@ class MyPageSelector extends StatelessWidget {
       ),
       Center(
           child: Text(
-        "You can save your games, count levels,battle with monsters, change hero position",
+        "You can save your games, count levels,battle with monsters, change hero position"
+            .tr(),
         style: TextStyle(fontSize: 24),
         textAlign: TextAlign.center,
       )),
@@ -39,7 +42,7 @@ class MyPageSelector extends StatelessWidget {
             Expanded(
                 child: Center(
               child: Text(
-                "Tap \"Start\" to start playing \n\nEnjoy your game",
+                "Tap \"Start\" to start playing \n\nEnjoy your game".tr(),
                 style: TextStyle(fontSize: 24),
                 textAlign: TextAlign.center,
               ),
@@ -53,7 +56,7 @@ class MyPageSelector extends StatelessWidget {
                 updateState();
               },
               child: Text(
-                "Start",
+                "Start".tr(),
                 style: TextStyle(color: Colors.white),
               ),
             )
@@ -88,11 +91,11 @@ class MyPageSelector extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        "Skip",
-                        style: TextStyle(color: brownColor),
-                      ),
+                        "Skip".tr(),
+                        style: TextStyle(color: Colors.black),
+                      ) ,
                     ),
-                    ElevatedButton(
+                     ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all<Color>(brownColor)),
@@ -102,7 +105,7 @@ class MyPageSelector extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        "Next",
+                        "Next".tr(),
                         style: TextStyle(color: Colors.white),
                       ),
                     )

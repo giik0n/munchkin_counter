@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:munchkin_counter/screens/Home.dart';
 import 'package:munchkin_counter/services/SPService.dart';
@@ -44,6 +45,9 @@ class _MyBodyState extends State<MyBody> {
 
     //SPService.initFirstAppStart();
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
           primaryColor: brownColor,
@@ -63,7 +67,7 @@ class _MyBodyState extends State<MyBody> {
             appBar: snapshot.data
                 ? null
                 : AppBar(
-                    title: Text("Munchkin counter"),
+                    title: Text("appBarTitle").tr(),
                   ),
             body: snapshot.data ? MyPageSelector(updateState) : HomeScreen(),
             floatingActionButton: snapshot.data
@@ -87,7 +91,8 @@ class _MyBodyState extends State<MyBody> {
                                         child: TextField(
                                           maxLength: 12,
                                           decoration: InputDecoration(
-                                              hintText: "Write company name"),
+                                              hintText:
+                                                  "Write company name".tr()),
                                           onChanged: (value) {
                                             companyName = value;
                                           },
@@ -112,7 +117,7 @@ class _MyBodyState extends State<MyBody> {
                                               //
                                             },
                                             child: Text(
-                                              "Add",
+                                              "Add".tr(),
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ),
