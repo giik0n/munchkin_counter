@@ -3,6 +3,7 @@ import 'package:munchkin_counter/screens/MyApp.dart';
 import 'package:wakelock/wakelock.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Wakelock.enable();
   runApp(MyApp());
 }

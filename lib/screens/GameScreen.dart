@@ -281,6 +281,22 @@ class _GameScreenState extends State<GameScreen> {
         actions: [
           IconButton(
               icon: Icon(
+                Icons.person_add,
+                size: 32,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                MyPlayer player = await showAddDialog();
+                if (player != null) {
+                  var id = await databaseService.addPlayer(player);
+                  player.id = id;
+                  setState(() {
+                    players.add(player);
+                  });
+                }
+              },),
+          IconButton(
+              icon: Icon(
                 Icons.refresh,
                 size: 32,
                 color: Colors.white,
@@ -298,19 +314,6 @@ class _GameScreenState extends State<GameScreen> {
                 }
               }),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          MyPlayer player = await showAddDialog();
-          if (player != null) {
-            var id = await databaseService.addPlayer(player);
-            player.id = id;
-            setState(() {
-              players.add(player);
-            });
-          }
-        },
-        child: Icon(Icons.add),
       ),
       body: players.length > 0
           ? Container(
@@ -523,12 +526,12 @@ class _GameScreenState extends State<GameScreen> {
             )
           : Container(
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    "assets/images/background_hw.jpeg",
-                  ),
-                  fit: BoxFit.cover,
-                ),
+                // image: DecorationImage(
+                //   image: AssetImage(
+                //     "assets/images/background_hw.jpeg",
+                //   ),
+                //   fit: BoxFit.cover,
+                // ),
               ),
               child: Center(
                 child: Padding(
@@ -545,7 +548,7 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                       Text(
                         "Add new players at botom \"+\" button",
-                        style: TextStyle(fontSize: 24, color: Colors.white),
+                        style: TextStyle(fontSize: 24, color: Colors.black),
                         textAlign: TextAlign.center,
                       ),
                     ],
