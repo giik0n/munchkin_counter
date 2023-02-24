@@ -16,10 +16,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   RateMyApp _rateMyApp = RateMyApp(
       preferencesPrefix: 'rateMyApp_',
-      minDays: 1,
+      minDays: 2,
       minLaunches: 2,
-      remindDays: 2,
-      remindLaunches: 2,
+      remindDays: 3,
+      remindLaunches: 3,
       appStoreIdentifier: 'com.alexpan.munchkinCounter',
       googlePlayIdentifier: 'com.alexpan.munchkin_counter');
 

@@ -8,7 +8,12 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   Wakelock.enable();
   runApp(EasyLocalization(
-      supportedLocales: const [Locale('ru'), Locale('en')],
+      supportedLocales: const [
+        Locale('ru'),
+        Locale('en'),
+        Locale("fr"),
+        Locale("uk")
+      ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       child: MyApp()));
