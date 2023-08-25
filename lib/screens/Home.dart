@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:munchkin_counter/screens/GameScreen.dart';
 import 'package:munchkin_counter/services/SPService.dart';
 import 'package:munchkin_counter/shared/colors.dart';
-import 'package:rate_my_app/rate_my_app.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -14,49 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  RateMyApp _rateMyApp = RateMyApp(
-      preferencesPrefix: 'rateMyApp_',
-      minDays: 2,
-      minLaunches: 2,
-      remindDays: 3,
-      remindLaunches: 3,
-      appStoreIdentifier: 'com.alexpan.munchkinCounter',
-      googlePlayIdentifier: 'com.alexpan.munchkin_counter');
-
   @override
   void initState() {
     super.initState();
-    _rateMyApp.init().then((_) {
-      if (_rateMyApp.shouldOpenDialog) {
-        _rateMyApp.showStarRateDialog(
-          context,
-          title: "Enjoying Munchkin Level Counter?".tr(),
-          message: "Please leave a rating!".tr(),
-          dialogStyle: const DialogStyle(
-            titleAlign: TextAlign.center,
-            messageAlign: TextAlign.center,
-            messagePadding: EdgeInsets.only(bottom: 20),
-          ),
-          actionsBuilder: (context, stars) {
-            return [
-              TextButton(
-                child: Text('OK'),
-                onPressed: () async {
-                  await _rateMyApp
-                      .callEvent(RateMyAppEventType.rateButtonPressed);
-                  Navigator.pop<RateMyAppDialogButton>(
-                      context, RateMyAppDialogButton.rate);
-                  _rateMyApp.launchStore();
-                },
-              ),
-            ];
-          },
-          starRatingOptions: StarRatingOptions(),
-          onDismissed: () =>
-              _rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
-        );
-      }
-    });
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
